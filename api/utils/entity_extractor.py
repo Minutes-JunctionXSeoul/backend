@@ -119,7 +119,6 @@ def extract_entities(client, documents):
             df.loc[x, 'EndDateTime'] = end_datetime
 
         # reformat to .ics format
-
         return df
 
     except Exception as err:

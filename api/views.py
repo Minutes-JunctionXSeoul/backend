@@ -2,7 +2,7 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView,
 from .serializers import PostSerializer, PostDetailSerializer, PostCreateSerializer
 from .models import Post
 from rest_framework.pagination import PageNumberPagination
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, FileResponse
 
 from .utils.entity_extractor import get_auth_client, extract_entities
 from .utils.calendar_utils import df_to_ics

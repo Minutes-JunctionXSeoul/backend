@@ -64,8 +64,10 @@ def make_docx(client,documents):
     
     write_subtitle("Keyword",para)
     write_keyword(keyword_sentence_dict,para)
-    write_subtitle("To-Do List",para)
-    write_todo(df_to_ics(df),para)
+    todo_df = df_to_ics(df)
+    if not todo_df.empty:
+        write_subtitle("To-Do List",para)
+        write_todo(df_to_ics(df),para)
     write_subtitle("Log",para)
     write_summary(documents,keyword_sentence_dict,para)
     para.add_run("\n\n")
