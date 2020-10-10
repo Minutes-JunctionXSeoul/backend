@@ -61,10 +61,9 @@ def make_docx(client,documents):
 
     keyword_sentence_dict = extract_keywords(client,documents)
     df = extract_entities(client, documents)
-    
     write_subtitle("Keyword",para)
     write_keyword(keyword_sentence_dict,para)
-    todo_df = df_to_ics(df)
+    todo_df = df_to_ics(df)  
     if not todo_df.empty:
         write_subtitle("To-Do List",para)
         write_todo(df_to_ics(df),para)

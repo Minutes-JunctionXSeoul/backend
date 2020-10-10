@@ -49,6 +49,7 @@ def extract_entities(client, documents):
             else:
                 iter_documents = documents[5*i:5*(i+1)]
             results = client.recognize_entities(documents=iter_documents)
+            print(results)
             for idx, result in enumerate(results):
                 # extract only if the document contains DateTime Entity
                 contains_datetime = False
@@ -60,6 +61,8 @@ def extract_entities(client, documents):
                     extract_title(result.entities, 5 * i + idx)
                     extract_content(result.entities, 5 * i + idx)
                     sentence_list.append(iter_documents[idx])
+                else:
+                    sentence_list.append(iter_documents[idx])
 
         # print(title_list)
         # print(content_list)
@@ -69,6 +72,7 @@ def extract_entities(client, documents):
 
         df = pd.merge(title_df, content_df, on="index")
         df = pd.merge(df, sentence_df, on="index")
+        
 
         #2개의 일이 하나의 일정에 겹친 경우
         change_datetime = []
@@ -118,7 +122,9 @@ def extract_entities(client, documents):
             df.loc[x, 'StartDateTime'] = start_datetime
             df.loc[x, 'EndDateTime'] = end_datetime
 
-        # reformat to .ics format
+        if not df.empty:
+            time_nan = df[pd.isna(df['StartDateTime'])].index
+            df = df.drop(time_nan)
         return df
 
     except Exception as err:
