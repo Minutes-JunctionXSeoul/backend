@@ -34,7 +34,7 @@ class Post_delete(DestroyAPIView):
     serializer_class = PostSerializer
 
 class Text_extract_calendar(ListAPIView):
-    def get(self, request):
+    def post(self, request):
         sentences = request.data['text'].split('.')
         sentences = list(filter(lambda x: len(x) > 3, sentences))
         sentences = list(map(lambda x: x.strip() + '.', sentences)) # '.' influences Azure entity recognition
@@ -47,7 +47,7 @@ class Text_extract_calendar(ListAPIView):
         return JsonResponse(response, safe=False, status=200)
     
 class Text_extract_minutes(ListAPIView):
-    def get(self, request):
+    def post(self, request):
         sentences = request.data['text'].split('.')
         sentences = list(filter(lambda x: len(x) > 3, sentences))
         sentences = list(map(lambda x: x.strip() + '.', sentences))
