@@ -36,9 +36,10 @@ class Text_extract_calendar(ListAPIView):
     def get(self, request):
         sentences = request.data['text'].split('.')
         sentences = list(filter(lambda x: len(x) > 3, sentences))
-        print(sentences)
+        sentences = list(map(lambda x: x.strip() + '.', sentences)) # '.' influences Azure entity recognition
+        # print(sentences)
         client = get_auth_client()
         data = extract_entities(client, sentences)
-        print(data)
+        # print(data)
 
         return JsonResponse(data, safe=False, status=200)
