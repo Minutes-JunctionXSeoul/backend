@@ -5,7 +5,7 @@ from rest_framework.pagination import PageNumberPagination
 from django.http import JsonResponse
 
 from .utils.entity_extractor import get_auth_client, extract_entities
-
+from .utils.calendar_utils import df_to_ics
 
 class PostPageNumberPagination(PageNumberPagination):
     page_size = 2
@@ -39,7 +39,8 @@ class Text_extract_calendar(ListAPIView):
         sentences = list(map(lambda x: x.strip() + '.', sentences)) # '.' influences Azure entity recognition
         # print(sentences)
         client = get_auth_client()
-        data = extract_entities(client, sentences)
-        # print(data)
+        df = extract_entities(client, sentences)
+        df = df_to_ics(df)
+        response = df.to_dict('records')
 
-        return JsonResponse(data, safe=False, status=200)
+        return JsonResponse(response, safe=False, status=200)
