@@ -52,5 +52,5 @@ class Text_extract_minutes(ListAPIView):
         sentences = list(filter(lambda x: len(x) > 3, sentences))
         sentences = list(map(lambda x: x.strip() + '.', sentences))
         client = get_auth_client()
-        make_docx(client, sentences)
-        return HttpResponse("회의록 파일이 생성되었습니다")
+        file_name = make_docx(client, sentences)
+        return FileResponse(open(file_name, 'rb'), content_type = 'text/doc')

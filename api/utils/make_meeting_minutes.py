@@ -70,6 +70,8 @@ def make_docx(client,documents):
     write_summary(documents,keyword_sentence_dict,para)
     para.add_run("\n\n")
     
-    doc.save(date+'_meeting minutes.docx')
+    file_name = date + '_meeting minutes.docx'
+    doc.save(file_name)
+    return file_name
     
 
