@@ -15,7 +15,9 @@ def divide_datetime(datetime_series):
     return day_list, time_list
 
 def df_to_ics(df):
-    if df and not df.empty:
+    if df is None:
+        return None
+    if not df.empty:
         df["Start Date"], df["Start Time"] = divide_datetime(df['StartDateTime'])
         df["End Date"], df["End Time"] = divide_datetime(df['EndDateTime'])
 

@@ -42,7 +42,10 @@ class Text_extract_calendar(ListAPIView):
         client = get_auth_client()
         df = extract_entities(client, sentences)
         df = df_to_ics(df)
-        response = df.to_dict('records')
+        if df is None:
+            response = []
+        else:
+            response = df.to_dict('records')
 
         return JsonResponse(response, safe=False, status=200)
     
