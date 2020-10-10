@@ -22,10 +22,10 @@ def extract_keywords(client, documents):
                 else:
                     print(response.id, response.error)
                 keywords_list.append(keywords_in_sentence)
-
+        
         #keyword 중에서 common한 것 num개 리턴
-        def common_keywords_extraction(keywords_list, num = len(documents)//4):        
-            keywords_count = collections.Counter(sum(keywords_list, []))
+        def common_keywords_extraction(keywords_list, num = len(documents)//4):
+            keywords_count = Counter(sum(keywords_list, []))
             common_keywords = keywords_count.most_common(num)
             result_keyword = []
             for i in range(num):

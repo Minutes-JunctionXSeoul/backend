@@ -54,12 +54,8 @@ def make_docx(client,documents):
             end_date = current['End Date']
             end_time = current['End Time']
             subject = current['Subject']
-            location = current['Location']
             description = current['Description']
-            if pd.isna(location):
-                result = f'[{start_date} {start_time} ~ {end_date} {end_time}] {subject} \norigin message: {description}\n'
-            else:
-                result = f'[{start_date} {start_time} ~ {end_date} {end_time}] {subject} ({location}) \norigin message: {description}\n'
+            result = f'[{start_date} {start_time} ~ {end_date} {end_time}] {subject} \norigin message: {description}\n'
             todo = para.add_run(result+"\n")
 
 
@@ -68,11 +64,12 @@ def make_docx(client,documents):
     
     write_subtitle("Keyword",para)
     write_keyword(keyword_sentence_dict,para)
-    write_title("To-Do List",para)
+    write_subtitle("To-Do List",para)
     write_todo(df_to_ics(df),para)
     write_subtitle("Log",para)
     write_summary(documents,keyword_sentence_dict,para)
     para.add_run("\n\n")
     
     doc.save(date+'_meeting minutes.docx')
+    
 

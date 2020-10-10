@@ -17,11 +17,10 @@ def divide_datetime(datetime_series):
 def df_to_ics(df):
     df["Start Date"], df["Start Time"] = divide_datetime(df['StartDateTime'])
     df["End Date"], df["End Time"] = divide_datetime(df['EndDateTime'])
-
+    
     # enter dummy columns for ics formatting
     df["All Day Event"] = ["False"] * len(df)
     df["Private"] = ["False"] * len(df)
-
-    df = df[['title','Start Date','End Date', 'Start Time', 'End Time', 'All Day Event', 'Location', 'memo', 'Private']]
-    df.columns = ['Subject','Start Date','End Date', 'Start Time', 'End Time', 'All Day Event', 'Location', 'Description', 'Private']
+    df = df[['title','Start Date','End Date', 'Start Time', 'End Time', 'All Day Event', 'memo', 'Private']]
+    df.columns = ['Subject','Start Date','End Date', 'Start Time', 'End Time', 'All Day Event', 'Description', 'Private']
     return df

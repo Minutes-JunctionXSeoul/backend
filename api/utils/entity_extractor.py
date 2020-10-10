@@ -7,8 +7,8 @@ from azure.core.credentials import AzureKeyCredential
 from .datetime_extractor import process_datetime_str
 
 def get_auth_client():
-    key = os.environ['NER_KEY']
-    endpoint = os.environ['NER_ENDPOINT']
+    key = 'cfecd721acc14ed592187934b2a0eeb1'
+    endpoint = 'https://junctionx-test.cognitiveservices.azure.com/'
     ta_credential = AzureKeyCredential(key)
     text_analytics_client = TextAnalyticsClient(
             endpoint=endpoint, 

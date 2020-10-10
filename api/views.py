@@ -2,10 +2,11 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView,
 from .serializers import PostSerializer, PostDetailSerializer, PostCreateSerializer
 from .models import Post
 from rest_framework.pagination import PageNumberPagination
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 
 from .utils.entity_extractor import get_auth_client, extract_entities
 from .utils.calendar_utils import df_to_ics
+from .utils.make_meeting_minutes import make_docx
 
 class PostPageNumberPagination(PageNumberPagination):
     page_size = 2
@@ -44,3 +45,12 @@ class Text_extract_calendar(ListAPIView):
         response = df.to_dict('records')
 
         return JsonResponse(response, safe=False, status=200)
+    
+class Text_extract_minutes(ListAPIView):
+    def get(self, request):
+        sentences = request.data['text'].split('.')
+        sentences = list(filter(lambda x: len(x) > 3, sentences))
+        sentences = list(map(lambda x: x.strip() + '.', sentences))
+        client = get_auth_client()
+        make_docx(client, sentences)
+        return HttpResponse("회의록 파일이 생성되었습니다")
