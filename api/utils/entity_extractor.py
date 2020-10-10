@@ -49,7 +49,7 @@ def extract_entities(client, documents):
             else:
                 iter_documents = documents[5*i:5*(i+1)]
             results = client.recognize_entities(documents=iter_documents)
-            print(results)
+            # print(results)
             for idx, result in enumerate(results):
                 # extract only if the document contains DateTime Entity
                 contains_datetime = False
