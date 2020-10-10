@@ -10,10 +10,10 @@ def make_docx(client,documents):
     doc = docx.Document()
     
     today = datetime.now()
-    date = str(today.year)+str(today.month)+str(today.day)+"_"+str(today.hour)+str('%02d' % today.minute)
+    date = str(today.year)[2:]+str('%02d' %today.month)+str('%02d' %today.day)+"_"+str('%02d' %today.hour)+str('%02d' % today.minute)
 
     #title
-    doc.add_heading(date+" summary",0)
+    doc.add_heading(date+" Meeting Minutes",0)
     para = doc.add_paragraph()
 
     def write_subtitle(string,para):

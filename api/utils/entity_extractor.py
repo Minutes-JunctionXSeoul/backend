@@ -22,18 +22,18 @@ def extract_entities(client, documents):
 
     def extract_title(entities, i):
         result = {'index' : i}
-        title = ""
+        title = []
         for entity in entities:
-            if (entity.category in ["Skill", "Event"]):
-                title += entity.text
-                title += '_'
-        result['title'] = title[:-1]
+            if (entity.category in ["Skill", "Event", "Product"]):
+                title.append(entity.text)
+        title = list(set(title))
+        result['title'] = "_".join(title)
         title_list.append(result)
 
     def extract_content(entities, i):
         result = {'index' : i}
         for entity in entities:
-            categories = ['Person', 'Location', 'Organization', 'Product','Address','PhoneNumber','Email','URL','DateTime']
+            categories = ['Person', 'Location', 'Organization', 'Address','PhoneNumber','Email','URL','DateTime']
             if entity.category in categories:
                 if entity.category in result:
                     content_list.append(result)
