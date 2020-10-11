@@ -26,7 +26,7 @@ def extract_keywords(client, documents):
         #keyword 중에서 common한 것 num개 리턴
         def common_keywords_extraction(keywords_list, num = len(documents)//4):
             keywords_count = Counter(sum(keywords_list, []))
-            print(keywords_count)
+            #print(keywords_count)
             common_keywords = keywords_count.most_common(num)
             result_keyword = []
             for i in range(num):
