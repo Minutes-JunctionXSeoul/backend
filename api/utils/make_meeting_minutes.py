@@ -1,5 +1,7 @@
 import docx
+import time
 import numpy
+import os
 from datetime import datetime
 
 from .log_summary import extract_keywords
@@ -7,72 +9,81 @@ from .calendar_utils import df_to_ics
 from .entity_extractor import extract_entities
 
 def make_docx(client,documents):
-    doc = docx.Document()
     
-    today = datetime.now()
-    date = str(today.year)[2:]+str('%02d' %today.month)+str('%02d' %today.day)+"_"+str('%02d' %today.hour)+str('%02d' % today.minute)
+    keyword_sentence_dict = extract_keywords(client,documents)
+    df = extract_entities(client, documents)
 
-    #title
-    doc.add_heading(date+" Meeting Minutes",0)
-    para = doc.add_paragraph()
+    dt = datetime.now()
 
-    def write_subtitle(string,para):
-        title = para.add_run(string+"\n")
-        title.bold = True
-        title.font.size = docx.shared.Pt(20)
+    year = dt.strftime("%y")
+    month = dt.strftime("%m")
+    day = dt.strftime("%d")
+    
+    company_name = "X company"
+    location = "conference room"
+    
+    date = year + '.' + month + '.' +  day + '.'
+    
+    hour = dt.strftime("%H")
+    mins = dt.strftime("%M")
+    
+    time = hour + ":" + mins
+    
+    
+    
+    doc = docx.Document(os.path.abspath("api/forms/form1.docx"))
 
-    def write_keyword(summary_dict,para):
-        for key, value in summary_dict.items():
-            keyword = para.add_run(key+" / ")
+    para = doc.paragraphs
+    table = doc.tables
+        
+    #개요
+    table[0].cell(0,1).text = location
+    table[0].cell(1,1).text = date
+    table[0].cell(2,1).text = time
+    
+    #keyword
+    for key in keyword_sentence_dict.keys():
+        keyword = para[2].add_run(key + ' / ')
+        keyword.bold = True
+        keyword.font.size = docx.shared.Pt(12)
+    
+    #summary
+    keyword_in_sentence = list(keyword_sentence_dict.values())
+    keywords = list(keyword_sentence_dict.keys())
+    for i in range(len(documents)):
+        if documents[i] in keyword_in_sentence:
+            keyword_in_sentence = numpy.array(keyword_in_sentence)
+            idx = numpy.where(keyword_in_sentence == documents[i])[0]
+            write_kw = ""
+            for k in idx:
+                write_kw += keywords[k]+" / "
+            keyword = para[7].add_run("\n" + write_kw[:-2] + "\n")
             keyword.bold = True
-            keyword.font.size = docx.shared.Pt(15)
-        para.add_run("\n\n")
+            keyword.font.size = docx.shared.Pt(13)
+        sentence = para[7].add_run(documents[i]+"\n")
 
-    def write_summary(doc,summary,para):
-        keyword_in_sentence = list(summary.values())
-        keywords = list(summary.keys())
-        for i in range(len(doc)):
-            if doc[i] in keyword_in_sentence:
-                keyword_in_sentence = numpy.array(keyword_in_sentence)
-                idx = numpy.where(keyword_in_sentence == doc[i])[0]
-                write_kw = ""
-                for k in idx:
-                    write_kw += keywords[k]+" / "
-                keyword = para.add_run(write_kw[:-2])
-                para.add_run("\n")
-                keyword.bold = True
-                keyword.font.size = docx.shared.Pt(15)
-            sentence = para.add_run(doc[i])
-            para.add_run("\n")
-
-
-    def write_todo(df,para):
-        for i in range(len(df)):
-            current = df.iloc[i]
+    #todo-list
+    todo_df = df_to_ics(df)  
+    if not todo_df.empty:
+        for i in range(len(todo_df)):
+            current = todo_df.iloc[i]
             start_date = current['Start Date']
             start_time = current['Start Time']
             end_date = current['End Date']
             end_time = current['End Time']
             subject = current['Subject']
             description = current['Description']
-            result = f'[{start_date} {start_time} ~ {end_date} {end_time}] {subject} \norigin message: {description}\n'
-            todo = para.add_run(result+"\n")
-
-
-    keyword_sentence_dict = extract_keywords(client,documents)
-    df = extract_entities(client, documents)
-    write_subtitle("Keyword",para)
-    write_keyword(keyword_sentence_dict,para)
-    todo_df = df_to_ics(df)  
-    if not todo_df.empty:
-        write_subtitle("To-Do List",para)
-        write_todo(df_to_ics(df),para)
-    write_subtitle("Log",para)
-    write_summary(documents,keyword_sentence_dict,para)
-    para.add_run("\n\n")
+            table[1].add_row()
+            table[1].cell(i+1,0).text = subject
+            table[1].cell(i+1,1).text = start_date + start_time
+            table[1].cell(i+1,2).text = end_date + end_time
+            table[1].cell(i+1,3).text = description
+    else:
+        for i in range(4):
+            table[1].cell(1,i).text = "Empty"
+        
     
-    file_name = date + '_meeting minutes.docx'
+    file_name = month + day + "_" + hour + mins + '_meeting minutes.docx'
     doc.save(file_name)
     return file_name
     
-
