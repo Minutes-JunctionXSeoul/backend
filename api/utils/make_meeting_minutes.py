@@ -75,7 +75,7 @@ def make_docx(client,documents):
             description = current['Description']
             table[1].add_row()
             table[1].cell(i+1,0).text = subject
-            table[1].cell(i+1,1).text = start_date + start_time
+            table[1].cell(i+1,1).text = start_date + " " + start_time
             table[1].cell(i+1,2).text = end_date + end_time
             table[1].cell(i+1,3).text = description
     else:
