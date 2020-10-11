@@ -7,6 +7,7 @@ from django.http import JsonResponse, HttpResponse, FileResponse
 from .utils.entity_extractor import get_auth_client, extract_entities
 from .utils.calendar_utils import df_to_ics
 from .utils.make_meeting_minutes import make_docx
+from .utils.log_summary import extract_keywords
 
 class PostPageNumberPagination(PageNumberPagination):
     page_size = 2
@@ -57,3 +58,18 @@ class Text_extract_minutes(ListAPIView):
         client = get_auth_client()
         file_name = make_docx(client, sentences)
         return FileResponse(open(file_name, 'rb'), content_type = 'text/doc')
+    
+class Text_extract_summary(ListAPIView):
+    def post(self, request):
+        sentences = request.data['text'].split('.')
+        sentences = list(filter(lambda x: len(x) > 3, sentences))
+        sentences = list(map(lambda x: x.strip() + '.', sentences))
+        client = get_auth_client()  
+        keyword_sentence_dict = extract_keywords(client, sentences)
+        response = []
+        for k,v in keyword_sentence_dict.items():
+            result = dict()
+            result['keyword'] = k
+            result['sentence'] = v
+            response.append(result)
+        return JsonResponse(response, safe=False, status = 200)

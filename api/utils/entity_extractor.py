@@ -7,8 +7,8 @@ from azure.core.credentials import AzureKeyCredential
 from .datetime_extractor import process_datetime_str
 
 def get_auth_client():
-    key = os.environ['NER_KEY']
-    endpoint = os.environ['NER_ENDPOINT']
+    key = '796a7f3c13874836be00a29b70c9aee5'
+    endpoint = 'https://minutes-text.cognitiveservices.azure.com/'
     ta_credential = AzureKeyCredential(key)
     text_analytics_client = TextAnalyticsClient(
             endpoint=endpoint, 
@@ -107,6 +107,10 @@ def extract_entities(client, documents):
 
         for change in change_title:
             df.loc[change[0], 'title'] = change[1]
+            
+        
+        for x in range(len(df)):
+            print(df.iloc[x])
 
         # apply date extraction to DateTime column
         for x in range(len(df)):
