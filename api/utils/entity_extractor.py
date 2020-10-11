@@ -108,10 +108,6 @@ def extract_entities(client, documents):
         for change in change_title:
             df.loc[change[0], 'title'] = change[1]
             
-        
-        for x in range(len(df)):
-            print(df.iloc[x])
-
         # apply date extraction to DateTime column
         for x in range(len(df)):
             try:
